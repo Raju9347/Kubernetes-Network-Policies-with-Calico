@@ -1,131 +1,20 @@
-Manifests used in the video
-Kind cluster yaml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-- role: control-plane
-  extraPortMappings:
-  - containerPort: 30001
-    hostPort: 30001
-- role: worker
-- role: worker
-networking:
-  disableDefaultCNI: true
-  podSubnet: 192.168.0.0/16
-Document to install calico on your cluster
-https://docs.tigera.io/calico/latest/getting-started/kubernetes/kind
 
-Application manifest
-apiVersion: v1
-kind: Pod
-metadata:
-  name: frontend
-  labels:
-    role: frontend
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-    ports:
-    - name: http
-      containerPort: 80
-      protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend
-  labels:
-    role: frontend
-spec:
-  selector:
-    role: frontend
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: backend
-  labels:
-    role: backend
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-    ports:
-    - name: http
-      containerPort: 80
-      protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend
-  labels:
-    role: backend
-spec:
-  selector:
-    role: backend
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: db
-  labels:
-    name: mysql
-spec:
-  selector:
-    name: mysql
-  ports:
-  - protocol: TCP
-    port: 3306
-    targetPort: 3306
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: mysql
-  labels:
-    name: mysql
-spec:
-  containers:
-    - name: mysql
-      image: mysql:latest
-      env:
-        - name: "MYSQL_USER"
-          value: "mysql"
-        - name: "MYSQL_PASSWORD"
-          value: "mysql"
-        - name: "MYSQL_DATABASE"
-          value: "testdb"
-        - name: "MYSQL_ROOT_PASSWORD"
-          value: "verysecure"
-      ports:
-        - name: http
-          containerPort: 3306
-          protocol: TCP
-Network policy sample used in the video
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: db-test
-spec:
-  podSelector:
-    matchLabels:
-      name: mysql
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          role: backend
-    ports:
-    - port: 3306
+**Why Use Network Policies**
+
+**Security:** Prevent unauthorized Pod‑to‑Pod communication.
+
+**Isolation:** Ensure sensitive workloads (e.g., databases) only accept traffic from specific Pods.
+
+**Compliance:** Enforce least‑privilege networking in regulated environments.
+
+**Control Egress:** Restrict Pods from calling external services unless explicitly allowed.
+
+
+**🔎 How They Work**
+You define a NetworkPolicy YAML that specifies:
+
+**Pod selector →** which Pods the policy applies to.
+
+**Ingress rules →** what inbound traffic is allowed.
+
+**Egress rules →** what outbound traffic is allowed.

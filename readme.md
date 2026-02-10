@@ -18,3 +18,23 @@ You define a NetworkPolicy YAML that specifies:
 **Ingress rules →** what inbound traffic is allowed.
 
 **Egress rules →** what outbound traffic is allowed.
+
+**List of kubectl cli**
+
+ kubectl get pods,svc
+ kubectl exec -it pod/frontend
+ kubectl exec -it pod/frontend sh
+ kubectl exec -it pod/frontend -- sh
+ kubectl get pods
+ kubectl exec -it pod/backend -- sh
+ kubectl get pods
+ network.yml
+ vi network.yml
+ kubectl apply -f network.yml 
+ kubectl get netpool
+ kubectl get netpol
+ kubectl describe netpol mysql
+ kubectl describe netpol db-test
+ kubectl exec -it pod/backend -- sh
+ kubectl get pods
+ kubectl exec -it pod/frontend -- sh
